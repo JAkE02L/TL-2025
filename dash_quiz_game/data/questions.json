@@ -1,0 +1,94 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "What does AI stand for?",
+      "options": ["Automated Intelligence", "Artificial Intelligence", "Advanced Information", "Automated Information"],
+      "correct_answer": "Artificial Intelligence"
+    },
+    {
+      "id": 2,
+      "question": "Which of these is NOT considered a type of AI?",
+      "options": ["Machine Learning", "Deep Learning", "Natural Language Processing", "Digital Scanning"],
+      "correct_answer": "Digital Scanning"
+    },
+    {
+      "id": 3,
+      "question": "Which game did IBM's Deep Blue computer defeat world champion Garry Kasparov in?",
+      "options": ["Checkers", "Go", "Chess", "Poker"],
+      "correct_answer": "Chess"
+    },
+    {
+      "id": 4,
+      "question": "What is the name of the AI assistant created by OpenAI?",
+      "options": ["Siri", "Alexa", "ChatGPT", "Cortana"],
+      "correct_answer": "ChatGPT"
+    },
+    {
+      "id": 5,
+      "question": "Which science fiction author wrote about the 'Three Laws of Robotics'?",
+      "options": ["Isaac Asimov", "Arthur C. Clarke", "Philip K. Dick", "Ray Bradbury"],
+      "correct_answer": "Isaac Asimov"
+    },
+    {
+      "id": 6,
+      "question": "What's the main goal of computer vision?",
+      "options": ["To make computers see colors", "To enable computers to identify and process images", "To create digital art", "To improve screen resolution"],
+      "correct_answer": "To enable computers to identify and process images"
+    },
+    {
+      "id": 7,
+      "question": "Which technology helps virtual assistants like Siri understand what you're saying?",
+      "options": ["Virtual Reality", "Speech Recognition", "Holography", "Quantum Computing"],
+      "correct_answer": "Speech Recognition"
+    },
+    {
+      "id": 8,
+      "question": "What is 'machine learning'?",
+      "options": ["Teaching robots to build machines", "When computers build other computers", "When computers learn from data without explicit programming", "A way to repair computers automatically"],
+      "correct_answer": "When computers learn from data without explicit programming"
+    },
+    {
+      "id": 9,
+      "question": "Which movie features an AI named JARVIS that helps the main character?",
+      "options": ["The Matrix", "Ex Machina", "Iron Man", "Her"],
+      "correct_answer": "Iron Man"
+    },
+    {
+      "id": 10,
+      "question": "What might a self-driving car use to 'see' the road?",
+      "options": ["Telescope", "LIDAR sensors", "Microscope", "X-ray vision"],
+      "correct_answer": "LIDAR sensors"
+    },
+    {
+      "id": 11,
+      "question": "Which AI beat the world champion in the game of Go in 2016?",
+      "options": ["DeepBlue", "Watson", "AlphaGo", "HAL 9000"],
+      "correct_answer": "AlphaGo"
+    },
+    {
+      "id": 12,
+      "question": "What ethical concern relates to AI using personal data?",
+      "options": ["Privacy", "Weather forecasting", "Transportation", "Agriculture"],
+      "correct_answer": "Privacy"
+    },
+    {
+      "id": 13,
+      "question": "Which of these is an application of AI in healthcare?",
+      "options": ["Building hospitals", "Medical image analysis", "Cleaning hospital floors", "Ambulance driving"],
+      "correct_answer": "Medical image analysis"
+    },
+    {
+      "id": 14,
+      "question": "What was the name of the first chatbot created in the 1960s?",
+      "options": ["ELIZA", "ALICE", "PARRY", "RACTER"],
+      "correct_answer": "ELIZA"
+    },
+    {
+      "id": 15,
+      "question": "Which of these is a popular programming language for AI development?",
+      "options": ["HTML", "CSS", "Python", "SQL"],
+      "correct_answer": "Python"
+    }
+  ]
+}

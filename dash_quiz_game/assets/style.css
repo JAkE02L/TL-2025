@@ -1,0 +1,32 @@
+/* Main styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Quiz card styling */
+.quiz-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: white;
+}
+
+/* Button styling */
+.answer-button {
+    margin-top: 8px;
+    width: 100%;
+    text-align: left;
+}
+
+/* Results styling */
+.correct-answer {
+    color: green;
+    font-weight: bold;
+}
+
+.incorrect-answer {
+    color: red;
+    text-decoration: line-through;
+}

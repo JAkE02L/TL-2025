@@ -1,0 +1,13 @@
+{
+  "scores": [
+    {
+      "id": 1,
+      "player": "Andres",
+      "score": 14,
+      "total": 15,
+      "percentage": 93.3,
+      "timestamp": "2025-03-11 21:15:23",
+      "time_taken": "N/A"
+    }
+  ]
+}
