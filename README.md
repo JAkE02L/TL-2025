@@ -23,7 +23,13 @@ Ahora que tenemos un diseño básico del chatbot, vamos a integrarlo con un LLM.
 7. Preguntémosle a la IA cómo podemos agregar autenticación a la aplicación con usuario/contraseña.
 8. Pidámosle a la IA que el usuario escoja a partir de los modelos disponibles desde una sección de ajustes
 9. Prueba los distintos modelos del lenguaje.
+
+### Capacidades extras
+1. Preguntale a la IA qué capacidades adicionales se le pueden agregar al chatbot.
+
+
 ## Funcionalidades implementadas
+
 
 ### Autenticación de usuarios
 La aplicación cuenta con un sistema de autenticación basado en usuario y contraseña. Los usuarios predeterminados son:
