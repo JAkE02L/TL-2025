@@ -18,4 +18,6 @@ Ahora que tenemos un diseño básico del chatbot, vamos a integrarlo con un LLM.
 2. Sigue los pasos para obtener la API Key (no la compartas con nadie) y cópiala en el portapapeles.
 3. Pidámosle al agente que usa la API Key de gemini para que nuestro chatbot nos responda.
 4. Iniciemos la aplicación y hagamos una pregunta para revisar si funciona correctamente.
-5. En caso de errores, copiemos el error y peguémoslo en el chat
+5. En caso de errores, copiemos el error y peguémoslo en el chat. Repetir hasta que el chatbot funcione.
+6. Hazle una pregunta.
+7. Preguntémosle a la IA cómo podemos agregar autenticación a la aplicación con usuario/contraseña.

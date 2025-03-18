@@ -2,6 +2,8 @@ import os
 import chainlit as cl
 import google.generativeai as genai
 from dotenv import load_dotenv
+import secrets
+from users import verify_password, get_user_data, register_user
 
 # Cargar variables de entorno desde .env
 load_dotenv()
@@ -10,6 +12,15 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
     raise ValueError("No se encontró la clave API de Gemini. Asegúrate de configurar GEMINI_API_KEY en el archivo .env")
+
+# Configurar la clave secreta para autenticación
+auth_secret = os.getenv("CHAINLIT_AUTH_SECRET")
+if not auth_secret:
+    # Generar una clave secreta si no existe
+    auth_secret = secrets.token_hex(16)
+    print(f"AVISO: Se ha generado una clave CHAINLIT_AUTH_SECRET temporal: {auth_secret}")
+    print("Para una configuración más segura, añádela a tu archivo .env")
+    os.environ["CHAINLIT_AUTH_SECRET"] = auth_secret
 
 # Imprimir información de depuración
 print(f"API Key configurada: {api_key[:4]}{'*' * (len(api_key) - 8)}{api_key[-4:]}")
@@ -67,6 +78,30 @@ if not working_model:
     working_model = "gemini-pro"
     model = genai.GenerativeModel(working_model)
 
+@cl.password_auth_callback
+def auth_callback(username: str, password: str):
+    """
+    Función de autenticación para validar usuario y contraseña.
+    Utiliza el sistema seguro de verificación de contraseñas.
+    
+    Args:
+        username: Nombre de usuario
+        password: Contraseña
+    
+    Returns:
+        cl.User object si la autenticación es exitosa, None en caso contrario
+    """
+    if verify_password(username, password):
+        user_data = get_user_data(username)
+        return cl.User(
+            identifier=username, 
+            metadata={
+                "role": user_data.get("role", "user"),
+                "provider": "credentials"
+            }
+        )
+    return None
+
 @cl.on_message  # Este decorador indica que la función se ejecutará cuando el usuario envíe un mensaje
 async def main(message: cl.Message):
     """
@@ -79,9 +114,32 @@ async def main(message: cl.Message):
     # Aquí procesamos el mensaje del usuario
     user_message = message.content
     
+    # Si el mensaje es un comando para registrar un nuevo usuario
+    if user_message.startswith("/register"):
+        parts = user_message.split()
+        if len(parts) >= 3:
+            new_username = parts[1]
+            new_password = parts[2]
+            result = register_user(new_username, new_password)
+            if result:
+                await cl.Message(content=f"Usuario {new_username} registrado con éxito.").send()
+            else:
+                await cl.Message(content=f"Error: El usuario {new_username} ya existe.").send()
+            return
+        else:
+            await cl.Message(content="Uso: /register [usuario] [contraseña]").send()
+            return
+    
     try:
+        # Obtener información del usuario para personalizar la interacción
+        app_user = cl.user_session.get("user")
+        user_role = app_user.metadata.get("role", "user")
+        
+        # Para demostrar personalización basada en roles
+        context = f"Estás hablando con {app_user.identifier} que tiene el rol de {user_role}. "
+        
         # Enviamos el mensaje a Gemini y obtenemos la respuesta
-        response = model.generate_content(user_message)
+        response = model.generate_content(context + user_message)
         
         # Enviamos la respuesta al usuario
         await cl.Message(content=response.text).send()
@@ -101,7 +159,17 @@ async def start():
     """
     Esta función se ejecuta cuando se inicia el chat.
     """
+    # Obtener información del usuario autenticado
+    app_user = cl.user_session.get("user")
+    
     # Mensaje de bienvenida
-    await cl.Message(
-        content=f"¡Bienvenido al Chatbot de TalentLand 2025 impulsado por Google Gemini! Estoy usando el modelo {working_model}. ¿En qué puedo ayudarte hoy?"
-    ).send() 
+    welcome_message = f"¡Bienvenido {app_user.identifier} al Chatbot de TalentLand 2025 impulsado por Google Gemini!"
+    welcome_message += f"\nEstoy usando el modelo {working_model}."
+    
+    # Agregar información específica según el rol del usuario
+    if app_user.metadata.get("role") == "admin":
+        welcome_message += "\n\nTienes acceso de administrador. Puedes usar el comando /register [usuario] [contraseña] para registrar nuevos usuarios."
+    
+    welcome_message += "\n\n¿En qué puedo ayudarte hoy?"
+    
+    await cl.Message(content=welcome_message).send() 

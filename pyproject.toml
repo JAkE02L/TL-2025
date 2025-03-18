@@ -8,6 +8,8 @@ dependencies = [
     "chainlit>=2.4.1",
     "google-generativeai>=0.8.4",
     "python-dotenv>=1.0.1",
+    "pyjwt>=2.8.0",
+    "argparse>=1.4.0",
 ]
 
 [project.optional-dependencies]
