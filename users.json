@@ -3,7 +3,10 @@
     "password_hash": "4f3b6ae07e7fc7ca4ff8d7315d3581bd0701dedd9ea2d97c9829045a4eb4b9d8",
     "salt": "556566fc7e4f747be4b6905e67c0bca8",
     "role": "admin",
-    "created_at": 1742264285.480612
+    "created_at": 1742264285.480612,
+    "settings": {
+      "preferred_model": "models/gemini-2.0-flash"
+    }
   },
   "usuario": {
     "password_hash": "041057d8e979ce533b28a6fba94aed928b2912c6ce8e32976b50ee1bbada5737",

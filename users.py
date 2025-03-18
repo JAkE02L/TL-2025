@@ -193,6 +193,51 @@ def get_user_data(username: str) -> Optional[Dict[str, Any]]:
     users = load_users()
     return users.get(username)
 
+def save_user_settings(username: str, settings: Dict[str, Any]) -> bool:
+    """
+    Guarda las configuraciones personalizadas de un usuario.
+    
+    Args:
+        username: Nombre de usuario
+        settings: Diccionario con las configuraciones a guardar
+        
+    Returns:
+        True si la operación fue exitosa, False en caso contrario
+    """
+    users = load_users()
+    
+    if username not in users:
+        return False
+    
+    # Crear o actualizar la sección de configuraciones
+    if "settings" not in users[username]:
+        users[username]["settings"] = {}
+    
+    # Actualizar las configuraciones con los nuevos valores
+    users[username]["settings"].update(settings)
+    
+    # Guardar los cambios
+    save_users(users)
+    return True
+
+def get_user_settings(username: str) -> Dict[str, Any]:
+    """
+    Obtiene las configuraciones personalizadas de un usuario.
+    
+    Args:
+        username: Nombre de usuario
+        
+    Returns:
+        Diccionario con las configuraciones del usuario, o un diccionario vacío si no existen
+    """
+    users = load_users()
+    
+    if username not in users:
+        return {}
+    
+    # Obtener la sección de configuraciones o un diccionario vacío si no existe
+    return users[username].get("settings", {})
+
 def list_users() -> List[str]:
     """
     Lista todos los usuarios registrados.

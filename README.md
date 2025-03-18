@@ -21,3 +21,39 @@ Ahora que tenemos un diseño básico del chatbot, vamos a integrarlo con un LLM.
 5. En caso de errores, copiemos el error y peguémoslo en el chat. Repetir hasta que el chatbot funcione.
 6. Hazle una pregunta.
 7. Preguntémosle a la IA cómo podemos agregar autenticación a la aplicación con usuario/contraseña.
+8. Pidámosle a la IA que el usuario escoja a partir de los modelos disponibles desde una sección de ajustes
+9. Prueba los distintos modelos del lenguaje.
+## Funcionalidades implementadas
+
+### Autenticación de usuarios
+La aplicación cuenta con un sistema de autenticación basado en usuario y contraseña. Los usuarios predeterminados son:
+- Usuario: `admin`, Contraseña: `talentland2025` (con rol de administrador)
+- Usuario: `usuario`, Contraseña: `password123` (con rol de usuario estándar)
+
+Los administradores pueden registrar nuevos usuarios usando el comando `/register [usuario] [contraseña]` dentro del chat.
+
+### Selección de modelo de IA
+La aplicación permite a cada usuario seleccionar el modelo de Google Gemini que desea utilizar para sus conversaciones:
+
+1. Para acceder a la configuración, haz clic en el ícono de engranaje (⚙️) en la parte inferior de la pantalla de chat
+2. En el panel de configuración, selecciona el modelo que deseas utilizar en el menú desplegable "Modelo Gemini"
+3. Una vez seleccionado, la aplicación guardará esta preferencia para futuras sesiones
+
+Los modelos disponibles dependen de tu API key de Google Gemini y pueden incluir:
+- gemini-pro
+- gemini-1.0-pro
+- gemini-1.5-pro
+- gemini-1.5-flash
+- Y otros modelos disponibles a través de tu cuenta
+
+La aplicación guardará las preferencias de modelo para cada usuario, manteniendo esa selección en futuras sesiones.
+
+## Ejecutar la aplicación
+
+Para ejecutar la aplicación, asegúrate de tener instaladas todas las dependencias y ejecuta:
+
+```bash
+chainlit run app.py
+```
+
+La aplicación estará disponible en http://localhost:8000 por defecto.

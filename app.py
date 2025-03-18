@@ -3,7 +3,8 @@ import chainlit as cl
 import google.generativeai as genai
 from dotenv import load_dotenv
 import secrets
-from users import verify_password, get_user_data, register_user
+from users import verify_password, get_user_data, register_user, save_user_settings, get_user_settings
+from chainlit.input_widget import Select
 
 # Cargar variables de entorno desde .env
 load_dotenv()
@@ -41,11 +42,11 @@ possible_models = [
 # Variable para almacenar el modelo que funcione
 working_model = None
 model = None
+available_models = []
 
 # Intentar listar modelos disponibles para diagnóstico
 try:
     print("Modelos disponibles:")
-    available_models = []
     for m in genai.list_models():
         model_name = m.name
         if "gemini" in model_name.lower():
@@ -102,6 +103,45 @@ def auth_callback(username: str, password: str):
         )
     return None
 
+@cl.on_settings_update
+async def handle_settings_update(settings):
+    """
+    Maneja las actualizaciones de configuración del chat.
+    Se ejecuta cuando el usuario cambia alguna configuración.
+    
+    Args:
+        settings: Diccionario con las configuraciones actualizadas
+    """
+    global model
+    
+    # Obtener el usuario actual
+    app_user = cl.user_session.get("user")
+    username = app_user.identifier
+    
+    # Obtener el modelo seleccionado
+    selected_model = settings.get("Modelo", working_model)
+    
+    try:
+        # Actualizar el modelo para este usuario
+        new_model = genai.GenerativeModel(selected_model)
+        
+        # Guardar el modelo en la sesión del usuario
+        cl.user_session.set("model", new_model)
+        cl.user_session.set("model_name", selected_model)
+        
+        # Guardar la preferencia del modelo en los ajustes del usuario
+        save_user_settings(username, {"preferred_model": selected_model})
+        
+        # Notificar al usuario
+        await cl.Message(
+            content=f"✅ Modelo actualizado a: {selected_model}"
+        ).send()
+    except Exception as e:
+        # Si hay un error, notificar al usuario y mantener el modelo anterior
+        await cl.Message(
+            content=f"❌ Error al cambiar al modelo {selected_model}: {str(e)}\nSe mantendrá el modelo actual."
+        ).send()
+
 @cl.on_message  # Este decorador indica que la función se ejecutará cuando el usuario envíe un mensaje
 async def main(message: cl.Message):
     """
@@ -135,11 +175,16 @@ async def main(message: cl.Message):
         app_user = cl.user_session.get("user")
         user_role = app_user.metadata.get("role", "user")
         
+        # Usar el modelo específico de la sesión del usuario si existe
+        current_model = cl.user_session.get("model")
+        if not current_model:
+            current_model = model
+        
         # Para demostrar personalización basada en roles
         context = f"Estás hablando con {app_user.identifier} que tiene el rol de {user_role}. "
         
         # Enviamos el mensaje a Gemini y obtenemos la respuesta
-        response = model.generate_content(context + user_message)
+        response = current_model.generate_content(context + user_message)
         
         # Enviamos la respuesta al usuario
         await cl.Message(content=response.text).send()
@@ -161,10 +206,50 @@ async def start():
     """
     # Obtener información del usuario autenticado
     app_user = cl.user_session.get("user")
+    username = app_user.identifier
+    
+    # Verificar si el usuario tiene un modelo preferido guardado
+    user_settings = get_user_settings(username)
+    preferred_model = user_settings.get("preferred_model", working_model)
+    
+    # Intentar usar el modelo preferido del usuario
+    try:
+        user_model = genai.GenerativeModel(preferred_model)
+        cl.user_session.set("model", user_model)
+        cl.user_session.set("model_name", preferred_model)
+    except Exception:
+        # Si hay error, usar el modelo por defecto
+        cl.user_session.set("model", model)
+        cl.user_session.set("model_name", working_model)
+        preferred_model = working_model
+    
+    # Configurar las opciones del chat
+    # Crea una lista de modelos disponibles para el selector de configuración
+    model_options = available_models if available_models else possible_models
+    
+    # Encuentra el índice del modelo preferido del usuario en la lista de opciones
+    try:
+        initial_index = model_options.index(preferred_model)
+    except ValueError:
+        initial_index = 0  # Si no encuentra el modelo, usa el primero
+    
+    # Crea y envía la configuración del chat
+    settings = await cl.ChatSettings(
+        [
+            Select(
+                id="Modelo",
+                label="Modelo Gemini",
+                values=model_options,
+                initial_index=initial_index,
+                description="Selecciona el modelo de Gemini que quieres usar para esta conversación",
+            )
+        ]
+    ).send()
     
     # Mensaje de bienvenida
-    welcome_message = f"¡Bienvenido {app_user.identifier} al Chatbot de TalentLand 2025 impulsado por Google Gemini!"
-    welcome_message += f"\nEstoy usando el modelo {working_model}."
+    welcome_message = f"¡Bienvenido {username} al Chatbot de TalentLand 2025 impulsado por Google Gemini!"
+    welcome_message += f"\nEstoy usando el modelo {preferred_model}."
+    welcome_message += "\n\nPuedes cambiar el modelo en cualquier momento usando el ícono de configuración ⚙️ en la parte inferior de la pantalla."
     
     # Agregar información específica según el rol del usuario
     if app_user.metadata.get("role") == "admin":
